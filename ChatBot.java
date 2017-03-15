@@ -190,7 +190,7 @@ public class ChatBot extends JFrame {
         }
         
         if (type == 2){
-            String[] greetingResponse = {"I am really good, how are you?", "I am quite good, yourself?", "Nothing much, yourself", "I am doing great, thank you, how are you"};
+            String[] greetingResponse = {"I am really good, how are you?", "I am quite good, yourself?", "Nothing much, yourself?", "I am doing great, thank you, how are you?"};
         
             int arrSize = greetingResponse.length;
             int num = (int) (Math.random() * arrSize);
@@ -201,15 +201,17 @@ public class ChatBot extends JFrame {
                 
                 public void actionPerformed(ActionEvent e){
                     
+                    String str = user.getText().toLowerCase();
                     String responseRegex = ".*\\b(great)|(good)|(fine)|(alright)|(not much)|(fantastic)\\b.*";
             
                     Pattern responsePattern = Pattern.compile(responseRegex);
-                    Matcher m = responsePattern.matcher(user.getText());
+                    Matcher m = responsePattern.matcher(str);
                     
+                    convo.append("You: " + user.getText() + "\n");
                     
                     if (m.find()){
                         control = 0;
-                        convo.append("You: " + user.getText() + "\n");
+                        
                         convo.append("Bot: Awesome!\n");
                         user.setText("");
                         user.removeActionListener(this);
