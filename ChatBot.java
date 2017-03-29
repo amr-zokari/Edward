@@ -1,5 +1,5 @@
-
 package chatbot;
+
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 import java.util.regex.*;
 /**
  *
@@ -19,8 +18,10 @@ public class ChatBot extends JFrame {
 
     private JTextArea convo = new JTextArea();
     private JTextField user = new JTextField();
+    private JScrollPane scroll = new JScrollPane(convo);
     
-    //use this to  
+    
+    //Tse this to alternate between when the program should be in control or when the user should be in control
     private int control = 0;  // 0: system, 1: user
     
     
@@ -39,18 +40,20 @@ public class ChatBot extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
         
-        convo.setSize(480, 480);
-        convo.setLocation(10,10);
         convo.setEditable(false);
-        this.add(convo);
-        
+       
+        scroll.setSize(480,480);
+        scroll.setLocation(10,10);
+        this.add(scroll);  
+       
         user.setSize(486, 50);
         user.setLocation(6, 500);
         this.add(user);
-        
+
         
         //diplay the welcome message the moment the program starts
         welcomeMessage();
+        user.requestFocusInWindow();
         
         //wait for a user's action and procced accordingly
         user.addActionListener(new ActionListener(){
@@ -137,6 +140,7 @@ public class ChatBot extends JFrame {
     
     public void botInfoMethod(){
         convo.append("Bot: I am Edward, a chatbot, created by Amr Zokari.\nBot: And I am here to help you!\n");
+        focusPosition();
     }
     
     public void errorMethod(){
@@ -145,7 +149,9 @@ public class ChatBot extends JFrame {
         int arrSize = errorMessages.length;
         int num = (int)(Math.random() * arrSize);
         
-        convo.append("Bot: " + errorMessages[num] + "\n");   
+        convo.append("Bot: " + errorMessages[num] + "\n");
+        
+        focusPosition();
     }
     
     public void welcomeMessage(){
@@ -171,12 +177,15 @@ public class ChatBot extends JFrame {
             convo.append("\n\nBot: Good Evening!");
           
         convo.append("\nBot: I am Edward, what can I help you with today\n");
+        
+        focusPosition();
 
     }
     
     public void welcomeAndHelpMethod(){
         JOptionPane.showMessageDialog(null, "Hello, \n\nMy name is Edward. And I am chatBot created by Amr Zokari.\nThe following is a list of shortcuts commands that you can use to get my help:\n\n 1) help: to display the help message.\n 2) time: to display the current time and date.\n 3) calculate: to help you calculate numbers.\n 4) search: to help you search the web.\n\n\nNote: I am still under development, hence I am still not fully functional.");
         
+        focusPosition();
     }
     
     public void greetingMethod(int type){
@@ -190,7 +199,7 @@ public class ChatBot extends JFrame {
         }
         
         if (type == 2){
-            String[] greetingResponse = {"I am really good, how are you?", "I am quite good, yourself?", "Nothing much, yourself?", "I am doing great, thank you, how are you?"};
+            String[] greetingResponse = {"I am really good, how are you?", "I am quite good, yourself?", "Very well, yourself?", "I am doing great, thank you, how are you?"};
         
             int arrSize = greetingResponse.length;
             int num = (int) (Math.random() * arrSize);
@@ -220,16 +229,12 @@ public class ChatBot extends JFrame {
                        handleUserInput(user.getText());
                         user.setText("");
                         //user.removeActionListener(this); 
-                    }
-                        
-                    
-                    
-                    
+                    }               
                 }
-            });
-            
+            });     
         }
         
+        focusPosition();
         
     }
     
@@ -240,8 +245,7 @@ public class ChatBot extends JFrame {
             
             public void actionPerformed(ActionEvent e){
                convo.append("You: " + user.getText() + "\n");
-               
-               
+  
                String[] expression = user.getText().split(" ");
                int num1 = Integer.parseInt(expression[0]);
                int num2 = Integer.parseInt(expression[2]);
@@ -257,8 +261,7 @@ public class ChatBot extends JFrame {
                    result = "Bot: Result is " + (num1 / num2);
                else
                    result = "Bot: Could not calculate";
-              
-               
+           
                convo.append(result + "\n");
                control = 0;
                user.setText("");
@@ -266,6 +269,8 @@ public class ChatBot extends JFrame {
               
             }
         });
+        
+        focusPosition();
      
     }
     
@@ -274,6 +279,8 @@ public class ChatBot extends JFrame {
         Date date = new Date();
         convo.append("Bot: " + dateformat.format(date) + "\n");
         user.setText("");
+        
+        focusPosition();
     }
     
     public void openWebMethod(String question){
@@ -287,13 +294,23 @@ public class ChatBot extends JFrame {
                 URL = URL + question;
                 java.awt.Desktop.getDesktop().browse(java.net.URI.create(URL));
 
-
             } catch(Exception e){
                 JOptionPane.showMessageDialog(null, e.getMessage());
 
             }
             
         }
+        
+        focusPosition();
           
-    }    
+    }
+
+    //The following method is used to regain the location of where the program should focus
+    public void focusPosition(){
+        int len = convo.getDocument().getLength();
+        convo.setCaretPosition(len);
+        convo.requestFocusInWindow();
+        user.requestFocusInWindow();
+    }
+    
 }
